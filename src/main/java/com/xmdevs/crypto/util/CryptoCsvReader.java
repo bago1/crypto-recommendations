@@ -21,10 +21,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static org.springframework.boot.logging.logback.RollingPolicySystemProperty.FILE_NAME_PATTERN;
 
 @Component
 @RequiredArgsConstructor

@@ -1,7 +1,7 @@
 package com.xmdevs.crypto.web.rest;
 
 
-import com.xmdevs.crypto.Service.CryptoService;
+import com.xmdevs.crypto.service.CryptoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

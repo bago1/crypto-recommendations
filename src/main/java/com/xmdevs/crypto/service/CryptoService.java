@@ -1,4 +1,4 @@
-package com.xmdevs.crypto.Service;
+package com.xmdevs.crypto.service;
 
 import java.util.*;
 
