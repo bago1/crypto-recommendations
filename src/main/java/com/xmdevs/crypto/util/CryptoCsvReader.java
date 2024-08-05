@@ -7,6 +7,7 @@ import com.xmdevs.crypto.data.CyrptoData;
 import com.xmdevs.crypto.model.Crypto;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.FileReader;
@@ -22,17 +23,19 @@ import java.util.stream.Stream;
 @Component
 @RequiredArgsConstructor
 public class CryptoCsvReader {
+    public static final String CSV = ".csv";
     private final CyrptoData data;
     private static final String DIRECTORY_PATH = "src/main/resources/prices/";
 
+    @Scheduled(cron = "0 0 0 * * ?")
     @PostConstruct
     public void loadData() {
         try (Stream<Path> paths = Files.list(Paths.get(DIRECTORY_PATH))) {
             List<String> cryptoFiles = paths
                     .filter(Files::isRegularFile)
-                    .filter(path -> path.toString().endsWith(".csv"))
                     .map(Path::toString)
-                    .collect(Collectors.toList());
+                    .filter(string -> string.endsWith(CSV))
+                    .toList();
 
             for (String cryptoFile : cryptoFiles) {
                 try (CSVReader reader = new CSVReaderBuilder(new FileReader(cryptoFile)).withSkipLines(1).build()) {

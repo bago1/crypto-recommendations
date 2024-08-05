@@ -15,7 +15,7 @@ public class CryptoServiceImpl implements CryptoService {
     private final CyrptoData data;
 
     @Override
-    public List<Map<String, Object>> getAllCryptoStats  () {
+    public List<Map<String, Object>> getAllCryptoStats() {
         Map<String, List<Crypto>> cryptoData = data.getCryptoData();
         List<Map<String, Object>> statsList = new ArrayList<>();
 
@@ -45,11 +45,10 @@ public class CryptoServiceImpl implements CryptoService {
     @Override
     public Map<String, Object> getStatsByCrypto(String crypto) {
         Map<String, List<Crypto>> cryptoData = data.getCryptoData();
-        List<Crypto> data = cryptoData.get(crypto);
-
-        if (data == null) {
-            throw new NoSuchElementException("Crypto not found");
+        if (!isCryptoSupported(crypto)) {
+            throw new NoSuchElementException("Crypto not supported");
         }
+        List<Crypto> data = cryptoData.get(crypto);
 
         double min = data.stream().min(Comparator.comparingDouble(Crypto::getPrice)).get().getPrice();
         double max = data.stream().max(Comparator.comparingDouble(Crypto::getPrice)).get().getPrice();
@@ -65,6 +64,12 @@ public class CryptoServiceImpl implements CryptoService {
 
         return stats;
     }
+
+    private boolean isCryptoSupported(String crypto) {
+
+        return data.getCryptoData().containsKey(crypto);
+    }
+
     public Map<String, Object> getHighestNormalizedRangeByDay(Long timestamp) {
         Map<String, List<Crypto>> cryptoData = data.getCryptoData();
         String highestCrypto = null;
