@@ -30,4 +30,9 @@ public class CryptoController {
     }
 
 
+    @GetMapping("/supported")
+    public Set<String> getSupportedCryptos() {
+        return cryptoService.getSupportedCryptos();
+    }
+
 }

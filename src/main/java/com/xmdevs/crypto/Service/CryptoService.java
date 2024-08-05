@@ -8,4 +8,7 @@ public interface CryptoService {
     Map<String, Object> getStatsByCrypto(String crypto);
 
     Map<String, Object> getHighestNormalizedRangeByDay(Long timestamp);
+
+    Set<String> getSupportedCryptos();
+
 }

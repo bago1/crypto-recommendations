@@ -98,6 +98,10 @@ public class CryptoServiceImpl implements CryptoService {
         return result;
     }
 
+    @Override
+    public Set<String> getSupportedCryptos() {
+        return data.getCryptoData().keySet();
+    }
     private static double findMaximum(List<Crypto> data) {
         return data.stream().max(Comparator.comparingDouble(Crypto::getPrice)).get().getPrice();
     }
