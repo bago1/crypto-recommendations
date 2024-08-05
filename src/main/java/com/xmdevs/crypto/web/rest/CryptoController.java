@@ -35,4 +35,9 @@ public class CryptoController {
         return cryptoService.getSupportedCryptos();
     }
 
+    @GetMapping("/{crypto}/stats/timeframe")
+    public Map<String, Object> getCryptoStatsByTimeframe(@PathVariable String crypto, @RequestParam int months) {
+        return cryptoService.getStatsByCryptoAndTimeframe(crypto, months);
+    }
+
 }

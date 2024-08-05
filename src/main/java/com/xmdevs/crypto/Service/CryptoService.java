@@ -11,4 +11,6 @@ public interface CryptoService {
 
     Set<String> getSupportedCryptos();
 
+    Map<String, Object> getStatsByCryptoAndTimeframe(String crypto, int months);
+
 }
