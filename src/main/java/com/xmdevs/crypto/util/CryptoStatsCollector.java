@@ -45,7 +45,7 @@ public class CryptoStatsCollector implements Collector<Crypto, CryptoStatsCollec
         return (acc1, acc2) -> {
             acc1.min = Math.min(acc1.min, acc2.min);
             acc1.max = Math.max(acc1.max, acc2.max);
-            acc1.oldest = acc1.oldest; // oldest is already set in the first accumulation
+            acc1.oldest = acc1.oldest;
             acc1.newest = acc2.newest;
             return acc1;
         };

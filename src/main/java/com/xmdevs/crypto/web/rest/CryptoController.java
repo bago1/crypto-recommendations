@@ -14,8 +14,8 @@ public class CryptoController {
     private final CryptoService cryptoService;
 
     @GetMapping("/stats")
-    public List<Map<String, Object>> getCryptoStats() {
-        return cryptoService.getAllCryptoStats();
+    public Map<String,List<Map<String, Object>>> getCryptoStatsByDateRange(@RequestParam String start, @RequestParam String end) {
+        return cryptoService.getCryptoStatsByDateRange(start, end);
     }
 
     @GetMapping("/{crypto}/stats")
@@ -24,17 +24,19 @@ public class CryptoController {
     }
 
 
-    @GetMapping("stats/highest-normalized/{timestamp}")
-    public Map<String, Object> getHighestNormalizedRangeByDay(@PathVariable Long timestamp) {
-        return cryptoService.getHighestNormalizedRangeByDay(timestamp);
+    @GetMapping("stats/highest-normalized")
+    public Map<String, Object> getHighestNormalizedRangeByDay(@RequestParam  String date) {
+        return cryptoService.getHighestNormalizedRangeByDay(date);
     }
 
 
+    //additional, not shown on requirements
     @GetMapping("/supported")
     public Set<String> getSupportedCryptos() {
         return cryptoService.getSupportedCryptos();
     }
 
+    //additional, not shown on requirements
     @GetMapping("/{crypto}/stats/timeframe")
     public Map<String, Object> getCryptoStatsByTimeframe(@PathVariable String crypto, @RequestParam int months) {
         return cryptoService.getStatsByCryptoAndTimeframe(crypto, months);

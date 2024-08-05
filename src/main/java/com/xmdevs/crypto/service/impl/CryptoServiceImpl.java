@@ -7,41 +7,22 @@ import com.xmdevs.crypto.service.CryptoService;
 import com.xmdevs.crypto.data.CyrptoData;
 import com.xmdevs.crypto.model.Crypto;
 import com.xmdevs.crypto.util.CryptoStatsCollector;
+import com.xmdevs.crypto.util.DateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static com.xmdevs.crypto.exception.Domain.CRYPTO_NOT_FOUND;
+import static com.xmdevs.crypto.util.DateUtils.*;
 
 @Service
 @RequiredArgsConstructor
 public class CryptoServiceImpl implements CryptoService {
 
     private final CyrptoData data;
-
-    @Override
-    public List<Map<String, Object>> getAllCryptoStats() {
-        Map<String, List<Crypto>> cryptoData = data.getCryptoData();
-        List<Map<String, Object>> statsList = new ArrayList<>();
-
-        for (String crypto : cryptoData.keySet()) {
-            List<Crypto> dataList = cryptoData.get(crypto);
-
-            if (dataList.isEmpty()) continue;
-
-            CryptoStatistics stats = dataList.stream().collect(new CryptoStatsCollector());
-            double normalizedRange = ((stats.getMax() - stats.getMin()) / stats.getMin());
-
-            Map<String, Object> statsMap = generateMap(crypto, stats.getMin(), stats.getMax(), stats.getNewest(), stats.getOldest(), normalizedRange);
-            statsList.add(statsMap);
-        }
-
-        statsList.sort((a, b) -> Double.compare((double) b.get("normalizedRange"), (double) a.get("normalizedRange")));
-        return statsList;
-    }
-
 
     @Override
     public Map<String, Object> getStatsByCrypto(String crypto) {
@@ -58,29 +39,31 @@ public class CryptoServiceImpl implements CryptoService {
     }
 
 
-    public Map<String, Object> getHighestNormalizedRangeByDay(Long timestamp) {
-        Map<String, List<Crypto>> cryptoData = data.getCryptoData();
+    public Map<String, Object> getHighestNormalizedRangeByDay(String date) {
+        long startOfDay = parseDateStartOfDay(date);
+        long endOfDay = parseDateEndOfDay(date);
+
+        Map<String, List<Crypto>> filteredDataByDay = new ConcurrentHashMap<>();
+        data.getCryptoData().forEach((key, value) -> {
+            List<Crypto> filteredList = value.stream()
+                    .filter(c -> c.getTimestamp() >= startOfDay && c.getTimestamp() <= endOfDay)
+                    .collect(Collectors.toList());
+            if (!filteredList.isEmpty()) {
+                filteredDataByDay.put(key, filteredList);
+            }
+        });
+
         String highestCrypto = null;
         double highestNormalizedRange = Double.MIN_VALUE;
 
-        for (Map.Entry<String, List<Crypto>> entry : cryptoData.entrySet()) {
+        for (Map.Entry<String, List<Crypto>> entry : filteredDataByDay.entrySet()) {
             String crypto = entry.getKey();
             List<Crypto> data = entry.getValue();
 
-            double min = Double.MAX_VALUE;
-            double max = Double.MIN_VALUE;
-            boolean found = false;
+            double min = data.stream().mapToDouble(Crypto::getPrice).min().orElse(Double.MAX_VALUE);
+            double max = data.stream().mapToDouble(Crypto::getPrice).max().orElse(Double.MIN_VALUE);
 
-            for (Crypto cryptoOnDay : data) {
-                if (cryptoOnDay.getTimestamp().equals(timestamp)) {
-                    found = true;
-                    double price = cryptoOnDay.getPrice();
-                    if (price < min) min = price;
-                    if (price > max) max = price;
-                }
-            }
-
-            if (found) {
+            if (min != Double.MAX_VALUE && max != Double.MIN_VALUE) {
                 double normalizedRange = (max - min) / min;
                 if (normalizedRange > highestNormalizedRange) {
                     highestNormalizedRange = normalizedRange;
@@ -94,6 +77,38 @@ public class CryptoServiceImpl implements CryptoService {
         result.put("normalizedRange", highestNormalizedRange);
 
         return result;
+    }
+
+    @Override
+    public Map<String, List<Map<String, Object>>> getCryptoStatsByDateRange(String start, String end) {
+        long startTime = parseDateStartOfDay(start);
+        long endTime = parseDateEndOfDay(end);
+
+        Map<String, List<Crypto>> cryptoData = data.getCryptoData();
+        List<Map<String, Object>> statsList = new ArrayList<>();
+
+        for (String crypto : cryptoData.keySet()) {
+            List<Crypto> dataList = cryptoData.get(crypto).stream()
+                    .filter(c -> c.getTimestamp() >= startTime && c.getTimestamp() < endTime)
+                    .collect(Collectors.toList());
+
+            if (dataList.isEmpty()) continue;
+
+            CryptoStatistics stats = dataList.stream().collect(new CryptoStatsCollector());
+            double normalizedRange = calculateNormalizedRange(stats.getMax(), stats.getMin());
+
+            Map<String, Object> statsMap = generateMap(crypto, stats.getMin(), stats.getMax(), stats.getNewest(), stats.getOldest(), normalizedRange);
+            statsList.add(statsMap);
+        }
+
+        statsList.sort((a, b) -> Double.compare((double) b.get("normalizedRange"), (double) a.get("normalizedRange")));
+        String intervalKey = start + " " + end;
+        return Map.of(intervalKey, statsList);
+    }
+
+    private static double calculateNormalizedRange(double max, double min) {
+        double result = (max - min) / min;
+        return Double.parseDouble(String.format("%.3f", result));
     }
 
 
