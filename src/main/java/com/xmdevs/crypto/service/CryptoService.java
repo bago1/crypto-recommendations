@@ -1,6 +1,8 @@
 package com.xmdevs.crypto.service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public interface CryptoService {
 
@@ -9,8 +11,6 @@ public interface CryptoService {
     Map<String, Object> getHighestNormalizedRangeByDay(String timestamp);
 
     Set<String> getSupportedCryptos();
-
-    Map<String, Object> getStatsByCryptoAndTimeframe(String crypto, int months);
 
     Map<String,List<Map<String, Object>>> getCryptoStatsByDateRange(String start, String end);
 }

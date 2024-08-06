@@ -1,13 +1,11 @@
 package com.xmdevs.crypto.service.impl;
 
-import com.xmdevs.crypto.exception.Domain;
+import com.xmdevs.crypto.data.CyrptoData;
 import com.xmdevs.crypto.exception.NotFoundException;
+import com.xmdevs.crypto.model.Crypto;
 import com.xmdevs.crypto.model.CryptoStatistics;
 import com.xmdevs.crypto.service.CryptoService;
-import com.xmdevs.crypto.data.CyrptoData;
-import com.xmdevs.crypto.model.Crypto;
 import com.xmdevs.crypto.util.CryptoStatsCollector;
-import com.xmdevs.crypto.util.DateUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +14,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static com.xmdevs.crypto.exception.Domain.CRYPTO_NOT_FOUND;
-import static com.xmdevs.crypto.util.DateUtils.*;
+import static com.xmdevs.crypto.util.DateUtils.parseDateEndOfDay;
+import static com.xmdevs.crypto.util.DateUtils.parseDateStartOfDay;
 
 @Service
 @RequiredArgsConstructor
@@ -45,9 +44,7 @@ public class CryptoServiceImpl implements CryptoService {
 
         Map<String, List<Crypto>> filteredDataByDay = new ConcurrentHashMap<>();
         data.getCryptoData().forEach((key, value) -> {
-            List<Crypto> filteredList = value.stream()
-                    .filter(c -> c.getTimestamp() >= startOfDay && c.getTimestamp() <= endOfDay)
-                    .collect(Collectors.toList());
+            List<Crypto> filteredList = value.stream().filter(c -> c.getTimestamp() >= startOfDay && c.getTimestamp() <= endOfDay).collect(Collectors.toList());
             if (!filteredList.isEmpty()) {
                 filteredDataByDay.put(key, filteredList);
             }
@@ -88,9 +85,7 @@ public class CryptoServiceImpl implements CryptoService {
         List<Map<String, Object>> statsList = new ArrayList<>();
 
         for (String crypto : cryptoData.keySet()) {
-            List<Crypto> dataList = cryptoData.get(crypto).stream()
-                    .filter(c -> c.getTimestamp() >= startTime && c.getTimestamp() < endTime)
-                    .collect(Collectors.toList());
+            List<Crypto> dataList = cryptoData.get(crypto).stream().filter(c -> c.getTimestamp() >= startTime && c.getTimestamp() < endTime).collect(Collectors.toList());
 
             if (dataList.isEmpty()) continue;
 
@@ -112,39 +107,6 @@ public class CryptoServiceImpl implements CryptoService {
     }
 
 
-    @Override
-    public Map<String, Object> getStatsByCryptoAndTimeframe(String crypto, int months) {
-        long currentTime = System.currentTimeMillis();
-        long startTime = currentTime - (long) months * 30 * 24 * 60 * 60 * 1000;
-
-        List<Crypto> dataList = data.getCryptoData(crypto).stream().filter(c -> c.getTimestamp() >= startTime).collect(Collectors.toList());
-
-        if (dataList.isEmpty()) {
-            throw new NoSuchElementException("No data available for the given timeframe");
-        }
-
-        double min = Double.MAX_VALUE;
-        double max = Double.MIN_VALUE;
-        double newest = Double.MIN_VALUE;
-        double oldest = Double.MAX_VALUE;
-
-        for (Crypto cryptoData : dataList) {
-            double price = cryptoData.getPrice();
-            if (price < min) min = price;
-            if (price > max) max = price;
-
-            if (cryptoData.getTimestamp() > newest) {
-                newest = cryptoData.getPrice();
-            }
-
-            if (cryptoData.getTimestamp() < oldest) {
-                oldest = cryptoData.getPrice();
-            }
-        }
-
-        return generateMap(crypto, min, max, newest, oldest);
-
-    }
 
     @Override
     public Set<String> getSupportedCryptos() {

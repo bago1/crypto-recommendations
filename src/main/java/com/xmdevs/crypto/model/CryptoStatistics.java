@@ -1,15 +1,5 @@
 package com.xmdevs.crypto.model;
 
-import java.util.DoubleSummaryStatistics;
-import java.util.EnumSet;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-
 public class CryptoStatistics {
     private double min;
     private double max;
@@ -23,7 +13,6 @@ public class CryptoStatistics {
         this.oldest = oldest;
     }
 
-    // Getters and toString method
     public double getMin() { return min; }
     public double getMax() { return max; }
     public double getNewest() { return newest; }

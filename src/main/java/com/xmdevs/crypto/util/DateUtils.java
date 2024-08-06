@@ -15,7 +15,7 @@ public class DateUtils {
 
 
     public static long parseDateStartOfDay(String date) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         try {
             Date parsedDate = sdf.parse(date);
