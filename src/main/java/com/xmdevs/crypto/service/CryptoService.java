@@ -12,5 +12,7 @@ public interface CryptoService {
 
     Set<String> getSupportedCryptos();
 
-    Map<String,List<Map<String, Object>>> getCryptoStatsByDateRange(String start, String end);
+    Map<String, List<Map<String, Object>>> getCryptoStatsByDateRange(String start, String end);
+
+    Double calculateNormalizedRange(double max, double min);
 }

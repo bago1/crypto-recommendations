@@ -3,7 +3,7 @@ package com.xmdevs.crypto.util;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvValidationException;
-import com.xmdevs.crypto.data.CyrptoData;
+import com.xmdevs.crypto.data.CryptoData;
 import com.xmdevs.crypto.model.Crypto;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class CryptoCsvReader {
     public static final String CSV = ".csv";
-    private final CyrptoData data;
+    private final CryptoData data;
     private static final String DIRECTORY_PATH = "src/main/resources/prices/";
     private static final Pattern FILE_NAME_PATTERN = Pattern.compile("^[A-Z]+_values\\.csv$");
 

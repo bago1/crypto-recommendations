@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-public class CyrptoData {
+public class CryptoData {
     private Map<String, List<Crypto>> cryptoData = new ConcurrentHashMap<>();
 
     public void setCryptoData(String key, List<Crypto> value) {

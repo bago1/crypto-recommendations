@@ -1,8 +1,14 @@
 package com.xmdevs.crypto.exception;
 
-public class NotFoundException extends RuntimeException {
+import lombok.Getter;
 
-    public NotFoundException(Domain message) {
-        super(message + " not found");
+@Getter
+public class NotFoundException extends RuntimeException {
+    private final Domain domain;
+
+    public NotFoundException(Domain domain) {
+        super(domain.toString());
+        this.domain = domain;
     }
+
 }

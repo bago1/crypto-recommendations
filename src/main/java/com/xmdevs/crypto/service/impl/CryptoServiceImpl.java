@@ -1,6 +1,6 @@
 package com.xmdevs.crypto.service.impl;
 
-import com.xmdevs.crypto.data.CyrptoData;
+import com.xmdevs.crypto.data.CryptoData;
 import com.xmdevs.crypto.exception.NotFoundException;
 import com.xmdevs.crypto.model.Crypto;
 import com.xmdevs.crypto.model.CryptoStatistics;
@@ -21,7 +21,7 @@ import static com.xmdevs.crypto.util.DateUtils.parseDateStartOfDay;
 @RequiredArgsConstructor
 public class CryptoServiceImpl implements CryptoService {
 
-    private final CyrptoData data;
+    private final CryptoData data;
 
     @Override
     public Map<String, Object> getStatsByCrypto(String crypto) {
@@ -101,12 +101,11 @@ public class CryptoServiceImpl implements CryptoService {
         return Map.of(intervalKey, statsList);
     }
 
-    private static double calculateNormalizedRange(double max, double min) {
+
+    public Double calculateNormalizedRange(double max, double min) {
         double result = (max - min) / min;
         return Double.parseDouble(String.format("%.3f", result));
     }
-
-
 
     @Override
     public Set<String> getSupportedCryptos() {
