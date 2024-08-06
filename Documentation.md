@@ -87,6 +87,7 @@
 9. **Dockerization**
     The application can be containerized using Docker. A Dockerfile is provided to build an image and run the application in a container. The application can be accessed at http://localhost:8080 when running in a container.
     To build the image: docker run -p 8080:8080 bago1/crypto:latest
+    To start the project the script named build_and_run.sh also can be used via docker-launch. 
 
 10. **Kubernetes Deployment**
     The application can be deployed to a Kubernetes cluster using a deployment and service configuration. The deployment ensures that the application is running and available, while the service provides a stable endpoint for accessing the application.
@@ -95,4 +96,5 @@
 
 11. **Unit Testing**
     The application includes unit tests for the service layer using JUnit and Mockito. The tests cover various scenarios to ensure the correctness of the business logic and exception handling.
+
 12. 
