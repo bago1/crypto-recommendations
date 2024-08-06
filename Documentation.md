@@ -91,3 +91,6 @@
     The application can be deployed to a Kubernetes cluster using a deployment and service configuration. The deployment ensures that the application is running and available, while the service provides a stable endpoint for accessing the application.
     To deploy the application: kubectl apply -f k8s/deployment.yaml
     To expose the application: kubectl apply -f k8s/service.yaml
+
+11. **Unit Testing**
+    The application includes unit tests for the service layer using JUnit and Mockito. The tests cover various scenarios to ensure the correctness of the business logic and exception handling.
