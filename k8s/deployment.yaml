@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crypto-deployment
+  labels:
+    app: crypto
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: crypto
+  template:
+    metadata:
+      labels:
+        app: crypto
+    spec:
+      containers:
+        - name: crypto
+          image: bago1/crypto:latest
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: prices-volume
+              mountPath: /app/src/main/resources/prices
+      volumes:
+        - name: prices-volume
+          hostPath:
+            path: /path/on/host/prices
+            type: Directory

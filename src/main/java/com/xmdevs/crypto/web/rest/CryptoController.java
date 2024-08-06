@@ -49,6 +49,4 @@ public class CryptoController {
         return cryptoService.getSupportedCryptos();
     }
 
-
-
 }
