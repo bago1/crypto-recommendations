@@ -14,5 +14,4 @@ public interface CryptoService {
 
     Map<String, List<Map<String, Object>>> getCryptoStatsByDateRange(String start, String end);
 
-    Double calculateNormalizedRange(double max, double min);
 }

@@ -5,6 +5,7 @@ import com.xmdevs.crypto.exception.NotFoundException;
 import com.xmdevs.crypto.model.Crypto;
 import com.xmdevs.crypto.model.CryptoStatistics;
 import com.xmdevs.crypto.service.CryptoService;
+import com.xmdevs.crypto.service.FinancialCalculationsService;
 import com.xmdevs.crypto.util.CryptoStatsCollector;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import static com.xmdevs.crypto.util.DateUtils.parseDateStartOfDay;
 public class CryptoServiceImpl implements CryptoService {
 
     private final CryptoData data;
+    private final FinancialCalculationsService financialCalculationsService;
 
     @Override
     public Map<String, Object> getStatsByCrypto(String crypto) {
@@ -90,7 +92,7 @@ public class CryptoServiceImpl implements CryptoService {
             if (dataList.isEmpty()) continue;
 
             CryptoStatistics stats = dataList.stream().collect(new CryptoStatsCollector());
-            double normalizedRange = calculateNormalizedRange(stats.getMax(), stats.getMin());
+            double normalizedRange = financialCalculationsService.calculateNormalizedRange(stats.getMax(), stats.getMin());
 
             Map<String, Object> statsMap = generateMap(crypto, stats.getMin(), stats.getMax(), stats.getNewest(), stats.getOldest(), normalizedRange);
             statsList.add(statsMap);
@@ -102,10 +104,7 @@ public class CryptoServiceImpl implements CryptoService {
     }
 
 
-    public Double calculateNormalizedRange(double max, double min) {
-        double result = (max - min) / min;
-        return Double.parseDouble(String.format("%.3f", result));
-    }
+
 
     @Override
     public Set<String> getSupportedCryptos() {

@@ -5,9 +5,8 @@ import com.xmdevs.crypto.data.CryptoData;
 import com.xmdevs.crypto.exception.Domain;
 import com.xmdevs.crypto.exception.NotFoundException;
 import com.xmdevs.crypto.model.Crypto;
+import com.xmdevs.crypto.service.FinancialCalculationsService;
 import com.xmdevs.crypto.service.impl.CryptoServiceImpl;
-import com.xmdevs.crypto.util.CryptoStatsCollector;
-import com.xmdevs.crypto.util.DateUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,15 +16,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.*;
 
-import static com.xmdevs.crypto.exception.Domain.CRYPTO_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class CryptoServiceImplTest {
 
     @Mock
     private CryptoData data;
+
+    @Mock
+    private FinancialCalculationsService financialCalculationsService;
 
     @InjectMocks
     private CryptoServiceImpl cryptoService;
@@ -81,6 +82,7 @@ public class CryptoServiceImplTest {
         String start = "2022-01-01";
         String end = "2022-02-01";
 
+        when(financialCalculationsService.calculateNormalizedRange(47000.00, 45000.00)).thenReturn(0.044);
         Map<String, List<Map<String, Object>>> stats = cryptoService.getCryptoStatsByDateRange(start, end);
 
         assertTrue(stats.containsKey("2022-01-01 2022-02-01"));
@@ -105,15 +107,5 @@ public class CryptoServiceImplTest {
         assertTrue(supportedCryptos.contains("BTC"));
     }
 
-//    @Test
-//    public void testCalculateNormalizedRange() {
-//        double max = 47000.00;
-//        double min = 45000.00;
-//        double expected = 0.044;
-//
-//        double result = cryptoService.calculateNormalizedRange(max, min);
-//
-//        assertEquals(expected, result, 0.001);
-//    }
 
 }
