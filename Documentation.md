@@ -76,9 +76,10 @@
 7. **Data Management**
     Loading Data from Folder
     The service automatically loads cryptocurrency price data from CSV files located in a specified directory at startup. The CryptoCsvReader reads these files and processes the data to be used by the service.
-
+    
     Uploading Data via API
     The DataController provides an endpoint to upload cryptocurrency price data via CSV files. The uploaded files are processed and the data is stored for querying through the service's endpoints.
+    It can be improved that to check if the file is already uploaded and if so, update the data instead of creating a new entry. This logic is not here bcs database interaction just has been mocked. 
 
 8. **API Documentation**
     The application provides API documentation using SpringDoc OpenAPI. The Swagger UI can be accessed at http://localhost:8080/swagger-ui.html. It lists all available endpoints, request/response formats, and example responses.
@@ -94,3 +95,4 @@
 
 11. **Unit Testing**
     The application includes unit tests for the service layer using JUnit and Mockito. The tests cover various scenarios to ensure the correctness of the business logic and exception handling.
+12. 
